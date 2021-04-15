@@ -5,8 +5,8 @@ python:
   - "3.8"
   - "3.9"
 install:
-  - pip install Cython numpy
-  - python setup.py install develop
+  - pip install Cython numpy flake8
+  - python setup.py install develop  # todo: use pip install
 script:
   - flake8 ib_sim
   - pytest
