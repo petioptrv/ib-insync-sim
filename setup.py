@@ -6,9 +6,9 @@ import os
 from setuptools import setup, Extension, dist
 
 # https://stackoverflow.com/questions/54117786/add-numpy-get-include-argument-to-setuptools-without-preinstalled-numpy
-dist.Distribution().fetch_build_eggs(
-    ['Cython>=0.15.1', 'numpy>=1.10', 'versioneer>=0.19']
-)
+# dist.Distribution().fetch_build_eggs(
+#     ['Cython>=0.15.1', 'numpy>=1.10']
+# )
 
 try:
     from Cython.Build import cythonize
@@ -23,8 +23,8 @@ WITH_DEBUG = False
 def build_extension(ext_name: str, with_np: bool = False) -> Extension:
     ext_path = ext_name.replace('.', os.path.sep)+'.pyx'
     include_dirs = []
-    if with_np:
-        include_dirs.append(np.get_include())
+    # if with_np:
+    #     include_dirs.append(np.get_include())
     extension = Extension(
         name=ext_name,
         sources=[ext_path],
@@ -54,8 +54,17 @@ install_requires = [
 ]
 
 dev_requires = [
-    'pytest >= 6.2.3, <7',
-    'versioneer >=0.19, <1',
+    'pytest',
+    'versioneer',
+    'pylint',
+    'pre-commit',
+    'versioneer',
+    'black',
+    'flake8',
+    'flake8-black',
+    'twine',
+    'sphinx',
+    'sphinx_rtd_theme',
 ]
 
 with open('README.rst', encoding='utf-8') as f:

@@ -6,13 +6,10 @@ cdef object CLIENT_IDS = set()
 
 
 cdef class IB:
-    cdef object _logger
-    cdef int _clientId
-
     def __init__(self):
         self._logger = logging.getLogger('ib_sim.ib')
 
-    def connect(
+    cpdef connect(
         self,
         str host = '127.0.0.1',
         int port = 7497,
