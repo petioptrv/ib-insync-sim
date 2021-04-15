@@ -3,14 +3,10 @@
 # https://github.com/FedericoStra/cython-package-example/blob/master/setup.py
 
 import os
+from distutils.command.build_ext import build_ext
 from typing import Callable
 
-from setuptools import setup, Extension, dist
-
-# https://stackoverflow.com/questions/54117786/add-numpy-get-include-argument-to-setuptools-without-preinstalled-numpy
-# dist.Distribution().fetch_build_eggs(
-#     ['Cython>=0.15.1', 'numpy>=1.10']
-# )
+from setuptools import setup, Extension
 
 try:
     from Cython.Build import cythonize
@@ -30,11 +26,11 @@ def no_cythonize(extensions_, **_ignore):
         sources = []
         for s_file in extension.sources:
             path, ext = os.path.splitext(s_file)
-            if ext in (".pyx", ".py"):
-                if extension.language == "c++":
-                    ext = ".cpp"
+            if ext in ('.pyx', '.py'):
+                if extension.language == 'c++':
+                    ext = '.cpp'
                 else:
-                    ext = ".c"
+                    ext = '.c'
                 s_file = path + ext
             sources.append(s_file)
         extension.sources[:] = sources
@@ -51,32 +47,30 @@ def build_extension(ext_name: str, with_np: bool = False) -> Extension:
         sources=[ext_path],
         include_dirs=include_dirs,
         db_debug=WITH_DEBUG,
+        language='c'
     )
     return extension
 
 
 extensions = [
     build_extension('ib_sim.ib'),
-    # Extension(
-    #     'cypack.sub.wrong',
-    #     ['src/cypack/sub/wrong.pyx', 'src/cypack/sub/helper.c']
-    # ),
 ]
 if CYTHONIZE:
-    compiler_directives = {"language_level": 3, "embedsignature": True}
+    compiler_directives = {'language_level': 3, 'embedsignature': True}
     extensions = cythonize(extensions, compiler_directives=compiler_directives)
 else:
     extensions = no_cythonize(extensions)
 
 install_options = {'build_ext': {'inplace': True}}
+cmdclass = {'build_ext': build_ext} if CYTHONIZE else {}
 
 install_requires = [
     'ib_insync >= 0.9.65, <1',
-    'Cython >= 0.15.1',
     'numpy >= 1.10, <2',
 ]
 
 dev_requires = [
+    'Cython',
     'pytest',
     'versioneer',
     'pylint',
@@ -98,7 +92,7 @@ keywords = 'ibapi tws asyncio jupyter interactive brokers async cython testing'
 setup(
     name='ib-sim',
     version=versioneer.get_version(),
-    cmdclass=versioneer.get_cmdclass(),
+    cmdclass=versioneer.get_cmdclass(cmdclass=cmdclass),
     description='Testing/simulation framework for ib-insync',
     long_description=long_description,
     url='https://github.com/petioptrv/ib-insync-sim',
