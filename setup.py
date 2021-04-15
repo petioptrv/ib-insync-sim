@@ -21,8 +21,8 @@ import versioneer
 WITH_DEBUG = False
 CYTHONIZE = isinstance(cythonize, Callable)
 
-print(f"CYTHONIZE {CYTHONIZE} - {cythonize}")
-print(f"WITH_DEBUG {WITH_DEBUG}")
+print(f'CYTHONIZE {CYTHONIZE} - {cythonize}')
+print(f'WITH_DEBUG {WITH_DEBUG}')
 
 
 # https://cython.readthedocs.io/en/latest/src/userguide/source_files_and_compilation.html#distributing-cython-modules
@@ -65,9 +65,6 @@ if CYTHONIZE:
     extensions = cythonize(extensions, compiler_directives=compiler_directives)
 else:
     extensions = no_cythonize(extensions)
-
-for ext in extensions:
-    print(f"{ext} - {ext.sources}")
 
 install_options = {'build_ext': {'inplace': True}}
 cmdclass = {'build_ext': build_ext} if CYTHONIZE else {}
