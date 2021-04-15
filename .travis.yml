@@ -7,6 +7,7 @@ python:
 install:
   - pip install flake8
 script:
+  - pip install ".[dev]"
   - python setup.py build_ext --inplace
   - python setup.py build install
   - flake8 ib_sim
