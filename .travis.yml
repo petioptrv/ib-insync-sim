@@ -6,11 +6,10 @@ python:
   - "3.9"
 install:
   - pip install flake8
-script:
   - pip install ".[dev]"
-  - python setup.py build_ext --inplace
-  - python setup.py build install
+script:
   - flake8 ib_sim
+  - pytest
 #deploy:
 #  provider: pypi
 #  username: __token__

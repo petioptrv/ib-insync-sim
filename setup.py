@@ -46,6 +46,7 @@ compiler_directives = {'language_level': 3, 'embedsignature': True}
 extensions = cythonize(
     extensions, compiler_directives=compiler_directives, build_dir='build'
 )
+install_options = {'build_ext': {'inplace': True}}
 
 install_requires = [
     'ib_insync >= 0.9.65, <1',
@@ -97,6 +98,7 @@ setup(
     packages=['ib_sim'],
     include_package_data=True,
     ext_modules=extensions,
+    options=install_options,
     install_requires=install_requires,
     extras_require={
         'dev': dev_requires,
