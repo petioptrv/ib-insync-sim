@@ -3,6 +3,8 @@
 # https://github.com/FedericoStra/cython-package-example/blob/master/setup.py
 
 import os
+from typing import Callable
+
 from setuptools import setup, Extension, dist
 
 # https://stackoverflow.com/questions/54117786/add-numpy-get-include-argument-to-setuptools-without-preinstalled-numpy
@@ -12,19 +14,38 @@ from setuptools import setup, Extension, dist
 
 try:
     from Cython.Build import cythonize
+    import numpy as np
 except ImportError:
     cythonize = None
-import numpy as np  # noqa: E402
-import versioneer  # noqa
+    np = None
+import versioneer
 
 WITH_DEBUG = False
+CYTHONIZE = isinstance(cythonize, Callable)
+
+
+# https://cython.readthedocs.io/en/latest/src/userguide/source_files_and_compilation.html#distributing-cython-modules
+def no_cythonize(extensions_, **_ignore):
+    for extension in extensions_:
+        sources = []
+        for s_file in extension.sources:
+            path, ext = os.path.splitext(s_file)
+            if ext in (".pyx", ".py"):
+                if extension.language == "c++":
+                    ext = ".cpp"
+                else:
+                    ext = ".c"
+                s_file = path + ext
+            sources.append(s_file)
+        extension.sources[:] = sources
+    return extensions_
 
 
 def build_extension(ext_name: str, with_np: bool = False) -> Extension:
-    ext_path = ext_name.replace('.', os.path.sep)+'.pyx'
+    ext_path = ext_name.replace('.', os.path.sep) + '.pyx'
     include_dirs = []
-    # if with_np:
-    #     include_dirs.append(np.get_include())
+    if with_np:
+        include_dirs.append(np.get_include())
     extension = Extension(
         name=ext_name,
         sources=[ext_path],
@@ -41,11 +62,12 @@ extensions = [
     #     ['src/cypack/sub/wrong.pyx', 'src/cypack/sub/helper.c']
     # ),
 ]
+if CYTHONIZE:
+    compiler_directives = {"language_level": 3, "embedsignature": True}
+    extensions = cythonize(extensions, compiler_directives=compiler_directives)
+else:
+    extensions = no_cythonize(extensions)
 
-compiler_directives = {'language_level': 3, 'embedsignature': True}
-extensions = cythonize(
-    extensions, compiler_directives=compiler_directives, build_dir='build'
-)
 install_options = {'build_ext': {'inplace': True}}
 
 install_requires = [
@@ -96,6 +118,7 @@ setup(
     ],
     keywords=keywords,
     packages=['ib_sim'],
+    package_data={'ib_sim': ['*.pxd']},
     include_package_data=True,
     ext_modules=extensions,
     options=install_options,
@@ -104,4 +127,5 @@ setup(
         'dev': dev_requires,
         'docs': ['sphinx', 'sphinx-rtd-theme']
     },
+    zip_safe=False,
 )

@@ -5,7 +5,6 @@ python:
   - "3.8"
   - "3.9"
 install:
-  - pip install flake8
   - pip install ".[dev]"
 script:
   - flake8 ib_sim
