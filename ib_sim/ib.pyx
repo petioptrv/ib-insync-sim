@@ -11,7 +11,6 @@ cdef class IB:
 
     def __init__(self):
         self._logger = logging.getLogger('ib_sim.ib')
-        self._clientId = -1
 
     def connect(
         self,
@@ -22,6 +21,9 @@ cdef class IB:
         bint readonly = False,
         str account = '',
     ):
+        self._logger.info(
+            f'Connecting to {host}:{port} with clientId {clientId}...'
+        )
         if clientId in CLIENT_IDS:
             self._logger.warning(
                 f'Peer closed connection. clientId {clientId} already in use?'
@@ -29,4 +31,3 @@ cdef class IB:
             time.sleep(timeout)
             raise asyncio.TimeoutError()
         CLIENT_IDS.add(clientId)
-        self._clientId = clientId

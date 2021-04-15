@@ -1,1 +1,2 @@
-recursive-include ib_sim *.pyx *.px[di] *.h *.c
+recursive-include ib_sim *.pyx *.px[di] *.h *.cinclude versioneer.py
+include ib_sim/_version.py
