@@ -6,7 +6,7 @@ python:
   - "3.9"
 install:
   - pip install Cython numpy
-  - pip install ".[dev]"
+  - python install develop
 script:
   - flake8 ib_sim
   - pytest
