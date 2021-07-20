@@ -59,6 +59,8 @@ def build_extension(ext_name: str, with_np: bool = False) -> Extension:
 
 extensions = [
     build_extension('ib_sim.ib'),
+    build_extension('ib_sim.client'),
+    build_extension('ib_sim.wrapper'),
 ]
 if CYTHONIZE:
     compiler_directives = {'language_level': 3, 'embedsignature': True}

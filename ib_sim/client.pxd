@@ -1,11 +1,15 @@
-from ib_sim.client cimport Client
 from ib_sim.wrapper cimport Wrapper
 
-cdef class IB:
+
+cdef class Client:
     cdef Wrapper wrapper
-    cdef Client client
+    cdef char *host
+    cdef int port
+    cdef int clientId
+    cdef int conState
     cdef object _logger
 
+    cpdef void reset(self)
     cpdef void connect(
         self,
         char *host = *,
